@@ -1,0 +1,7 @@
+click==8.1.8
+coloredlogs==15.0.1
+cyvcf2==0.31.1
+humanfriendly==10.0
+numpy==2.2.3
+pyparsing==3.2.1
+rdflib==7.1.3
