@@ -1,4 +1,5 @@
 import argparse
+import concurrent.futures
 
 from rdflib import Graph, URIRef, RDF, Literal, RDFS, XSD, BNode
 from cyvcf2 import VCF, Variant
@@ -170,16 +171,33 @@ def include_prefixes(graph: Graph):
     nm.bind(prefix='gfvo', namespace=Namespace("https://github.com/BioInterchange/Ontologies/gfvo#"), override=True, replace=True)
     nm.bind(prefix='up', namespace=Namespace('http://purl.uniprot.org/core/'), override=True, replace=True)
 
+def generate_graph_for_vcf(vcf_file, threads: int) -> Graph:
+    vcf_graph: Graph = Graph()
+    vcf_info = VCF(vcf_file, strict_gt=True, threads=threads)
+    sample_list = include_samples(vcf_info, vcf_graph)
+    include_ref_seqs(vcf_info, vcf_graph)
+    for variant in vcf_info:
+        include_variant(variant, sample_list, vcf_graph)
+    return vcf_graph
+
 def generate_rdf(vcf_files: list, output_rdf_file: str, threads: int):
     graph: Graph = Graph()
-    include_prefixes(graph)
-    for vcf_file in vcf_files:
-        vcf_info = VCF(vcf_file, strict_gt=True, threads=threads)
-        sample_list = include_samples(vcf_info, graph)
-        include_ref_seqs(vcf_info, graph)
-        for variant in vcf_info:
-            include_variant(variant, sample_list, graph)
 
+    with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
+        future_dict = {}
+        for vcf_file in vcf_files:
+            future_dict[vcf_file] = executor.submit(generate_graph_for_vcf, vcf_file, 1)
+
+        for vcf_file, future in future_dict.items():
+            try:
+                vcf_graph = future.result()
+            except Exception as exc:
+                print(f'Error transforming {vcf_file}: {str(exc)}')
+            else:
+                print(f"{vcf_file} transformed")
+                graph = graph + vcf_graph
+
+    include_prefixes(graph)
     graph.serialize(output_rdf_file, format="ttl")
 
 if __name__ == '__main__':
