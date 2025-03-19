@@ -18,6 +18,15 @@ GENOTYPE_CLASS = URIRef(GFVO_NS + "Genotype")
 HOMOZYGOUS_CLASS =URIRef(GFVO_NS + "Homozygous")
 HETEROZYGOUS_CLASS = URIRef(GFVO_NS + "Heterozygous")
 HEMIZYGOUS_CLASS = URIRef(GFVO_NS + "Hemizygous")
+CONDITIONAL_GENOTYPE_QUALITY_CLASS = URIRef(GFVO_NS + 'ConditionalGenotypeQuality')
+COVERAGE_CLASS = URIRef(GFVO_NS + 'Coverage')
+ALLELE_FREQUENCY_CLASS = URIRef(GFVO_NS + 'AlleleFrequency')
+STRUCTURAL_DELETION_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '0000159')
+STRUCTURAL_INSERTION_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '0000667')
+STRUCTURAL_DUPLICATION_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '1000035')
+STRUCTURAL_INVERSION_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '1000036')
+STRUCTURAL_COPY_NUMBER_VARIATION_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '0001019')
+STRUCTURAL_BREAKEND_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '0002062')
 
 IDENTIFIER_PROP = URIRef(DCTERMS_NS + 'identifier')
 LENGTH_PROP = URIRef(UNIPROT_NS + 'length')
@@ -62,10 +71,32 @@ def include_ref_seqs(vcf_info: VCF, graph: Graph):
         graph.add((chromosome_instance, RDFS.label, Literal(seqname)))
         graph.add((chromosome_instance, LENGTH_PROP, Literal(seqlen, datatype=XSD.int)))
 
+def get_sv_type_class(variant) -> URIRef:
+    sv_type = variant.INFO.get('SVTYPE')
+    if sv_type is not None:
+        if sv_type == 'DEL':
+            return STRUCTURAL_DELETION_CLASS
+        if sv_type == 'INS':
+            return STRUCTURAL_INSERTION_CLASS
+        if sv_type == 'DUP':
+            return STRUCTURAL_DUPLICATION_CLASS
+        if sv_type == 'INV':
+            return STRUCTURAL_INVERSION_CLASS
+        if sv_type == 'CNV':
+            return STRUCTURAL_COPY_NUMBER_VARIATION_CLASS
+        if sv_type == 'BND':
+            return STRUCTURAL_BREAKEND_CLASS
+        print(f"SVTYPE '{sv_type}' not recognised")
+    return None
+
+
 
 def include_variant(variant: Variant, sample_list: list, graph: Graph):
     variant_instance = get_variant_iri(variant)
     graph.add((variant_instance, RDF.type, SEQUENCE_ALTERATION_CLASS))
+    sv_type_class = get_sv_type_class(variant)
+    if sv_type_class is not None:
+        graph.add((variant_instance, RDF.type, sv_type_class))
 
     chromosome_instance = get_chromosome_iri(variant)
 
@@ -122,6 +153,12 @@ def include_sample_genotypes(variant: Variant, sample_list: list, graph: Graph):
         gt_type = variant.gt_types[i] # HOM_REF=0, HET=1. For gts012=True HOM_ALT=2, UNKNOWN=3
         gt_phase = variant.gt_phases[i] # boolean indicating whether each sample is phased
         genotype = variant.genotypes[i] # [0, 1, True] corresponds to 0|1 while [1, 2, False] corresponds to 1/2
+        gt_depth = variant.gt_depths[i] # DP field
+        gt_ref_depth = variant.gt_ref_depths[i]
+        gt_alt_depth = variant.gt_alt_depths[i]
+        gt_alt_freq = variant.gt_alt_freqs[i] # AF field
+        gt_genotype_quality = variant.gt_quals[i] # GQ field
+
 
         genotype_instance = None
         zygosity = get_zygosity_class(gt_type)
@@ -137,6 +174,22 @@ def include_sample_genotypes(variant: Variant, sample_list: list, graph: Graph):
             graph.add((genotype_instance, HAS_FIRST_PART_PROP, first_sequence_genotype))
             second_sequence_genotype = get_genotype_sequence_instance(genotype[1], variant)
             graph.add((genotype_instance, HAS_LAST_PART_PROP, second_sequence_genotype))
+
+            if gt_genotype_quality is not None and gt_genotype_quality != -1:
+                genotype_quality_instance = BNode()
+                graph.add((genotype_quality_instance, RDF.type, CONDITIONAL_GENOTYPE_QUALITY_CLASS))
+                graph.add((genotype_quality_instance, HAS_VALUE_PROP, Literal(gt_genotype_quality)))
+                graph.add((genotype_instance, HAS_ATTRIBUTE_PROP, genotype_quality_instance))
+            if gt_depth is not None and gt_depth != -1:
+                coverage_instance = BNode()
+                graph.add((coverage_instance, RDF.type, COVERAGE_CLASS))
+                graph.add((coverage_instance, HAS_VALUE_PROP, Literal(gt_depth)))
+                graph.add((genotype_instance, HAS_ATTRIBUTE_PROP, coverage_instance))
+            if gt_alt_freq is not None and gt_alt_freq != -1:
+                alt_freq_instance = BNode()
+                graph.add((alt_freq_instance, RDF.type, ALLELE_FREQUENCY_CLASS))
+                graph.add((alt_freq_instance, HAS_VALUE_PROP, Literal(gt_alt_freq)))
+                graph.add((genotype_instance, HAS_ATTRIBUTE_PROP, coverage_instance))
 
         evidence = BNode()
         graph.add((evidence, HAS_SOURCE_PROP, sample_instance))
