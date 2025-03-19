@@ -175,3 +175,5 @@ cython_debug/
 
 # test resources
 test_resources/
+
+.~lock*

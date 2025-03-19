@@ -43,7 +43,7 @@ def create_arg_parser():
 def include_samples(vcf_info: VCF, graph: Graph) -> list:
     sample_list = []
     for sample in vcf_info.samples:
-        sample_instance = URIRef(SAMPLE_NS + sample)
+        sample_instance = get_sample_iri(sample)
         graph.add((sample_instance, RDF.type, SAMPLE_CLASS))
         graph.add((sample_instance, IDENTIFIER_PROP, Literal(sample)))
         sample_list.append({'sample_instance': sample_instance,
@@ -57,22 +57,19 @@ def include_ref_seqs(vcf_info: VCF, graph: Graph):
     for i in range(len(seqnames)):
         seqname = seqnames[i]
         seqlen = seqlens[i]
-        chromosome_instance = URIRef(CHROMOSOME_NS + seqname)
+        chromosome_instance = get_chromosome_iri_from_chromosome_name(seqname)
         graph.add((chromosome_instance, RDF.type, CHROMOSOME_CLASS))
         graph.add((chromosome_instance, RDFS.label, Literal(seqname)))
         graph.add((chromosome_instance, LENGTH_PROP, Literal(seqlen, datatype=XSD.int)))
 
 
-
-
 def include_variant(variant: Variant, sample_list: list, graph: Graph):
-    variant_id = get_variant_id(variant)
     variant_instance = get_variant_iri(variant)
     graph.add((variant_instance, RDF.type, SEQUENCE_ALTERATION_CLASS))
 
-    chromosome_instance = URIRef(CHROMOSOME_NS + variant.CHROM)
+    chromosome_instance = get_chromosome_iri(variant)
 
-    position_instance = URIRef(POSITION_NS + f"{variant.CHROM}-{variant.start}")
+    position_instance = get_position_iri(variant)
     graph.add((position_instance, RDF.type, POSITION_CLASS))
     graph.add((position_instance, REFERENCE_PROP, chromosome_instance))
     graph.add((position_instance, POSITION_PROP, Literal(variant.start, datatype=XSD.int)))
@@ -82,15 +79,14 @@ def include_variant(variant: Variant, sample_list: list, graph: Graph):
     graph.add((variant_instance, IDENTIFIER_PROP, Literal(variant.ID)))
 
     # Use of reference sequence to describe REF field
-    reference_sequence_instance = URIRef(SEQUENCE_REFERENCE_NS + variant_id)
+    reference_sequence_instance = get_ref_sequence_iri(variant)
     graph.add((reference_sequence_instance, RDF.type, REFERENCE_SEQUENCE_CLASS))
     graph.add((reference_sequence_instance, HAS_VALUE_PROP, Literal(variant.REF)))
     graph.add((variant_instance, HAS_ATTRIBUTE_PROP, reference_sequence_instance))
 
     # Use of sequence variant to describe ALT field
     for allele in variant.ALT:
-        allele_id = get_allele_id(variant, allele)
-        sequence_variant_instance = URIRef(SEQUENCE_VARIANT_NS + allele_id)
+        sequence_variant_instance = get_allele_iri(variant, allele)
         graph.add((sequence_variant_instance, RDF.type, SEQUENCE_VARIANT_CLASS))
         graph.add((sequence_variant_instance, HAS_VALUE_PROP, Literal(allele)))
         graph.add((variant_instance, HAS_ATTRIBUTE_PROP, sequence_variant_instance))
@@ -130,7 +126,7 @@ def include_sample_genotypes(variant: Variant, sample_list: list, graph: Graph):
         genotype_instance = None
         zygosity = get_zygosity_class(gt_type)
         if zygosity is not None:
-            genotype_instance = URIRef(GENOTYPE_NS + sample_name + '-' + variant_id)
+            genotype_instance = get_genotype_iri(sample_name, variant)
             graph.add((genotype_instance, RDF.type, GENOTYPE_CLASS))
             graph.add((genotype_instance, HAS_QUALITY_PROP, zygosity))
             genotype_string = get_genotype_string(genotype)
