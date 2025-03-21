@@ -142,6 +142,56 @@ def get_genotype_string(genotype):
         return None
     return f"{genotype[0]}{'|' if genotype[2] else '/'}{genotype[1]}"
 
+def get_ref_depth(variant:Variant, sample_index: int) -> int:
+    gt_ref_depth = variant.gt_ref_depths[sample_index]
+    if gt_ref_depth is not None and gt_ref_depth != -1:
+        return gt_ref_depth
+
+    ## SNIFFLES FORMAT=<ID=DR,Number=1,Type=Integer,Description="Number of reference reads">
+    if 'DR' in variant.FORMAT:
+        return variant.format('DR')[sample_index][0]
+    else:
+        return None
+
+def get_alt_depth(variant: Variant, sample_index: int) -> int:
+    gt_alt_depth = variant.gt_alt_depths[sample_index]
+    if gt_alt_depth is not None and gt_alt_depth != -1:
+        return gt_alt_depth
+
+    ## SNIFFLES FORMAT=<ID=DV,Number=1,Type=Integer,Description="Number of variant reads">
+    if 'DV' in variant.FORMAT:
+        return variant.format('DV')[sample_index][0]
+    else:
+        return None
+
+
+def get_depth(variant: Variant, sample_index: int) -> int:
+    gt_depth = variant.gt_depths[sample_index]  # DP field
+
+    if gt_depth is not None and gt_depth != -1:
+        return gt_depth
+
+    gt_alt_depth = get_alt_depth(variant, sample_index)
+    gt_ref_depth = get_ref_depth(variant, sample_index)
+
+    if gt_alt_depth is not None and gt_ref_depth is not None:
+        return gt_alt_depth + gt_ref_depth
+
+    return None
+
+def get_alt_freq(variant: Variant, sample_index: int) -> int:
+    gt_alt_freq = variant.gt_alt_freqs[sample_index] # AF field
+
+    if gt_alt_freq is not None and gt_alt_freq != -1:
+        return gt_alt_freq
+
+    number_of_reads = get_depth(variant, sample_index)
+    number_of_reads_supporting_variation = get_alt_depth(variant, sample_index)
+
+    if number_of_reads is not None and number_of_reads_supporting_variation is not None:
+        return float(number_of_reads_supporting_variation)/float(number_of_reads)
+
+    return None
 
 def include_sample_genotypes(variant: Variant, sample_list: list, graph: Graph):
     variant_id = get_variant_id(variant)
@@ -153,10 +203,8 @@ def include_sample_genotypes(variant: Variant, sample_list: list, graph: Graph):
         gt_type = variant.gt_types[i] # HOM_REF=0, HET=1. For gts012=True HOM_ALT=2, UNKNOWN=3
         gt_phase = variant.gt_phases[i] # boolean indicating whether each sample is phased
         genotype = variant.genotypes[i] # [0, 1, True] corresponds to 0|1 while [1, 2, False] corresponds to 1/2
-        gt_depth = variant.gt_depths[i] # DP field
-        gt_ref_depth = variant.gt_ref_depths[i]
-        gt_alt_depth = variant.gt_alt_depths[i]
-        gt_alt_freq = variant.gt_alt_freqs[i] # AF field
+        gt_depth = get_depth(variant, i)
+        gt_alt_freq = get_alt_freq(variant, i)
         gt_genotype_quality = variant.gt_quals[i] # GQ field
 
 
