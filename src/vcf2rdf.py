@@ -4,7 +4,7 @@ import concurrent.futures
 from rdflib import Graph, URIRef, RDF, Literal, RDFS, XSD, BNode
 from cyvcf2 import VCF, Variant
 from rdflib.namespace import NamespaceManager, Namespace
-
+from rdflib.plugins.stores.berkeleydb import has_bsddb
 from iri_utils import *
 from namespaces import *
 
@@ -189,7 +189,7 @@ def include_sample_genotypes(variant: Variant, sample_list: list, graph: Graph):
                 alt_freq_instance = BNode()
                 graph.add((alt_freq_instance, RDF.type, ALLELE_FREQUENCY_CLASS))
                 graph.add((alt_freq_instance, HAS_VALUE_PROP, Literal(gt_alt_freq)))
-                graph.add((genotype_instance, HAS_ATTRIBUTE_PROP, coverage_instance))
+                graph.add((genotype_instance, HAS_ATTRIBUTE_PROP, alt_freq_instance))
 
         evidence = BNode()
         graph.add((evidence, HAS_SOURCE_PROP, sample_instance))
@@ -221,6 +221,7 @@ def include_prefixes(graph: Graph):
     nm.bind(prefix='up', namespace=Namespace('http://purl.uniprot.org/core/'), override=True, replace=True)
 
 def generate_graph_for_vcf(vcf_file, threads: int) -> Graph:
+    print(f"Processing {vcf_file}")
     vcf_graph: Graph = Graph()
     vcf_info = VCF(vcf_file, strict_gt=True, threads=threads)
     sample_list = include_samples(vcf_info, vcf_graph)
@@ -231,7 +232,6 @@ def generate_graph_for_vcf(vcf_file, threads: int) -> Graph:
 
 def generate_rdf(vcf_files: list, output_rdf_file: str, threads: int):
     graph: Graph = Graph()
-
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         future_dict = {}
         for vcf_file in vcf_files:
@@ -247,7 +247,9 @@ def generate_rdf(vcf_files: list, output_rdf_file: str, threads: int):
                 graph = graph + vcf_graph
 
     include_prefixes(graph)
+    print(f"Saving graph into {output_rdf_file}")
     graph.serialize(output_rdf_file, format="ttl")
+    print("Done")
 
 if __name__ == '__main__':
     arguments = create_arg_parser()

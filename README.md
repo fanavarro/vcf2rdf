@@ -70,3 +70,42 @@ where {
     ?sample a gfvo:Sample .
 }
 ```
+
+### Get the variant, variant identifier, samples having the variant, genotype of the samples, the sequences of the genotypes, and info for the sample (genotype quality, read depth, allele frequency and mutated reads depth)
+
+```
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX gfvo: <https://github.com/BioInterchange/Ontologies/gfvo#>
+PREFIX so: <http://purl.obolibrary.org/obo/SO_>
+select *
+where {
+    ?variant a so:0001059 ;
+    	dc:identifier ?variantID .
+    ?variant gfvo:hasEvidence [
+        gfvo:hasSource ?sample ;
+        gfvo:hasAttribute [
+        	a gfvo:Genotype ;
+    		rdfs:label ?genotypeLabel ;
+    		gfvo:hasFirstPart [ gfvo:hasValue ?firstGenotypeSeq ] ;
+    		gfvo:hasLastPart [ gfvo:hasValue ?secondGenotypeSeq ] ;
+            gfvo:hasAttribute [
+                    a gfvo:ConditionalGenotypeQuality ;
+            		gfvo:hasValue ?genotypeQuality
+            ] ;
+            gfvo:hasAttribute [
+                    a gfvo:Coverage ;
+             		gfvo:hasValue ?readDepth
+             ] ;
+            gfvo:hasAttribute [
+                    a gfvo:AlleleFrequency ;
+            		gfvo:hasValue ?alternativeFrequency
+            ]
+        ]
+    ] .
+    BIND(xsd:int(round(xsd:double(?readDepth) * ?alternativeFrequency)) AS ?variantReadDepth ).
+    ?sample a gfvo:Sample .
+}
+```
