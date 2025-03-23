@@ -1,12 +1,13 @@
 import argparse
 import concurrent.futures
-
+import traceback
 from rdflib import Graph, URIRef, RDF, Literal, RDFS, XSD, BNode
 from cyvcf2 import VCF, Variant
 from rdflib.namespace import NamespaceManager, Namespace
 from rdflib.plugins.stores.berkeleydb import has_bsddb
 from iri_utils import *
 from namespaces import *
+from src.custom_thread_pool import ThreadPoolExecutorStackTraced
 
 SAMPLE_CLASS = URIRef(GFVO_NS + 'Sample')
 CHROMOSOME_CLASS = URIRef(GFVO_NS + 'Chromosome')
@@ -188,7 +189,7 @@ def get_alt_freq(variant: Variant, sample_index: int) -> int:
     number_of_reads = get_depth(variant, sample_index)
     number_of_reads_supporting_variation = get_alt_depth(variant, sample_index)
 
-    if number_of_reads is not None and number_of_reads_supporting_variation is not None:
+    if number_of_reads is not None and number_of_reads_supporting_variation is not None and number_of_reads > 0:
         return float(number_of_reads_supporting_variation)/float(number_of_reads)
 
     return None
@@ -218,10 +219,12 @@ def include_sample_genotypes(variant: Variant, sample_list: list, graph: Graph):
             if genotype_string is not None:
                 graph.add((genotype_instance, RDFS.label, Literal(genotype_string)))
 
-            first_sequence_genotype = get_genotype_sequence_instance(genotype[0], variant)
-            graph.add((genotype_instance, HAS_FIRST_PART_PROP, first_sequence_genotype))
-            second_sequence_genotype = get_genotype_sequence_instance(genotype[1], variant)
-            graph.add((genotype_instance, HAS_LAST_PART_PROP, second_sequence_genotype))
+            if genotype[0] != -1:
+                first_sequence_genotype = get_genotype_sequence_instance(genotype[0], variant)
+                graph.add((genotype_instance, HAS_FIRST_PART_PROP, first_sequence_genotype))
+            if genotype[1] != -1:
+                second_sequence_genotype = get_genotype_sequence_instance(genotype[1], variant)
+                graph.add((genotype_instance, HAS_LAST_PART_PROP, second_sequence_genotype))
 
             if gt_genotype_quality is not None and gt_genotype_quality != -1:
                 genotype_quality_instance = BNode()
@@ -280,7 +283,8 @@ def generate_graph_for_vcf(vcf_file, threads: int) -> Graph:
 
 def generate_rdf(vcf_files: list, output_rdf_file: str, threads: int):
     graph: Graph = Graph()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
+    #with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
+    with ThreadPoolExecutorStackTraced(max_workers=threads) as executor:
         future_dict = {}
         for vcf_file in vcf_files:
             future_dict[vcf_file] = executor.submit(generate_graph_for_vcf, vcf_file, 1)
@@ -289,9 +293,10 @@ def generate_rdf(vcf_files: list, output_rdf_file: str, threads: int):
             try:
                 vcf_graph = future.result()
             except Exception as exc:
-                print(f'Error transforming {vcf_file}: {str(exc)}')
+                print(f'Error processing {vcf_file}: {str(exc)}')
+                print(traceback.format_exc())
             else:
-                print(f"{vcf_file} transformed")
+                print(f"{vcf_file} processed")
                 graph = graph + vcf_graph
 
     include_prefixes(graph)
