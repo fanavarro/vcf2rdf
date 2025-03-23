@@ -1,0 +1,11 @@
+name: vcf2rdf
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - r
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+    - -r requirements.txt
