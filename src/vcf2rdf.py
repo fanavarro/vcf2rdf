@@ -7,7 +7,7 @@ from rdflib.namespace import NamespaceManager, Namespace
 from rdflib.plugins.stores.berkeleydb import has_bsddb
 from iri_utils import *
 from namespaces import *
-from src.custom_thread_pool import ThreadPoolExecutorStackTraced
+from custom_thread_pool import ThreadPoolExecutorStackTraced
 
 SAMPLE_CLASS = URIRef(GFVO_NS + 'Sample')
 CHROMOSOME_CLASS = URIRef(GFVO_NS + 'Chromosome')
