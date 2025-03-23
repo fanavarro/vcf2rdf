@@ -284,7 +284,8 @@ def generate_graph_for_vcf(vcf_file, threads: int) -> Graph:
 def generate_rdf(vcf_files: list, output_rdf_file: str, threads: int):
     graph: Graph = Graph()
     #with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
-    with ThreadPoolExecutorStackTraced(max_workers=threads) as executor:
+    #with ThreadPoolExecutorStackTraced(max_workers=threads) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
         future_dict = {}
         for vcf_file in vcf_files:
             future_dict[vcf_file] = executor.submit(generate_graph_for_vcf, vcf_file, 1)
