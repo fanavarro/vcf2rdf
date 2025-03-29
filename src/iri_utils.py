@@ -61,10 +61,11 @@ def get_position_iri(variant: Variant):
     return URIRef(POSITION_NS + f"{variant.CHROM}-{variant.start}")
 
 def get_chromosome_iri(variant: Variant):
-    return get_chromosome_iri_from_chromosome_name(variant.CHROM)
+    return get_landmark_iri_from_chromosome_name(variant.CHROM)
 
-def get_chromosome_iri_from_chromosome_name(chromosome_name: str):
-    return URIRef(CHROMOSOME_NS + chromosome_name)
+def get_landmark_iri_from_chromosome_name(chromosome_name: str):
+    # Remove "chr" to make it compatible with gff3 data
+    return URIRef(LANDMARK_NS + chromosome_name.replace('chr', ''))
 
 def get_sample_iri(sample_name: str):
     return URIRef(SAMPLE_NS + sample_name)

@@ -1,16 +1,16 @@
 import argparse
 import concurrent.futures
 import traceback
-from rdflib import Graph, URIRef, RDF, Literal, RDFS, XSD, BNode
+from rdflib import Graph, URIRef, RDF, Literal, XSD, BNode
 from cyvcf2 import VCF, Variant
 from rdflib.namespace import NamespaceManager, Namespace
-from rdflib.plugins.stores.berkeleydb import has_bsddb
 from iri_utils import *
 from namespaces import *
-from custom_thread_pool import ThreadPoolExecutorStackTraced
+from src.gfvo_utils import add_identifier, add_label, add_location
 
 SAMPLE_CLASS = URIRef(GFVO_NS + 'Sample')
-CHROMOSOME_CLASS = URIRef(GFVO_NS + 'Chromosome')
+CHROMOSOME_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '0000340')
+LANDMARK_CLASS = URIRef(GFVO_NS + 'Landmark')
 SEQUENCE_ALTERATION_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + "0001059")
 POSITION_CLASS = URIRef(FALDO_NS + "Position")
 REFERENCE_SEQUENCE_CLASS = URIRef(GFVO_NS + "ReferenceSequence")
@@ -29,7 +29,6 @@ STRUCTURAL_INVERSION_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '1000036')
 STRUCTURAL_COPY_NUMBER_VARIATION_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '0001019')
 STRUCTURAL_BREAKEND_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '0002062')
 
-IDENTIFIER_PROP = URIRef(DCTERMS_NS + 'identifier')
 LENGTH_PROP = URIRef(UNIPROT_NS + 'length')
 REFERENCE_PROP = URIRef(FALDO_NS + 'reference')
 POSITION_PROP = URIRef(FALDO_NS + 'position')
@@ -55,7 +54,8 @@ def include_samples(vcf_info: VCF, graph: Graph) -> list:
     for sample in vcf_info.samples:
         sample_instance = get_sample_iri(sample)
         graph.add((sample_instance, RDF.type, SAMPLE_CLASS))
-        graph.add((sample_instance, IDENTIFIER_PROP, Literal(sample)))
+        # graph.add((sample_instance, IDENTIFIER_PROP, Literal(sample)))
+        add_identifier(graph, sample_instance, sample)
         sample_list.append({'sample_instance': sample_instance,
                             'sample_name': sample})
     return sample_list
@@ -67,9 +67,11 @@ def include_ref_seqs(vcf_info: VCF, graph: Graph):
     for i in range(len(seqnames)):
         seqname = seqnames[i]
         seqlen = seqlens[i]
-        chromosome_instance = get_chromosome_iri_from_chromosome_name(seqname)
+        chromosome_instance = get_landmark_iri_from_chromosome_name(seqname)
         graph.add((chromosome_instance, RDF.type, CHROMOSOME_CLASS))
-        graph.add((chromosome_instance, RDFS.label, Literal(seqname)))
+        graph.add((chromosome_instance, RDF.type, LANDMARK_CLASS))
+        # graph.add((chromosome_instance, RDFS.label, Literal(seqname)))
+        add_label(graph, chromosome_instance, seqname)
         graph.add((chromosome_instance, LENGTH_PROP, Literal(seqlen, datatype=XSD.int)))
 
 def get_sv_type_class(variant) -> URIRef:
@@ -95,20 +97,12 @@ def get_sv_type_class(variant) -> URIRef:
 def include_variant(variant: Variant, sample_list: list, graph: Graph):
     variant_instance = get_variant_iri(variant)
     graph.add((variant_instance, RDF.type, SEQUENCE_ALTERATION_CLASS))
+    add_identifier(graph, variant_instance, variant.ID)
+    add_location(graph, variant)
+
     sv_type_class = get_sv_type_class(variant)
     if sv_type_class is not None:
         graph.add((variant_instance, RDF.type, sv_type_class))
-
-    chromosome_instance = get_chromosome_iri(variant)
-
-    position_instance = get_position_iri(variant)
-    graph.add((position_instance, RDF.type, POSITION_CLASS))
-    graph.add((position_instance, REFERENCE_PROP, chromosome_instance))
-    graph.add((position_instance, POSITION_PROP, Literal(variant.start, datatype=XSD.int)))
-    graph.add((position_instance, RDFS.label, Literal(f"{variant.CHROM}:{variant.start}")))
-
-    graph.add((variant_instance, LOCATION_PROP, position_instance))
-    graph.add((variant_instance, IDENTIFIER_PROP, Literal(variant.ID)))
 
     # Use of reference sequence to describe REF field
     reference_sequence_instance = get_ref_sequence_iri(variant)
@@ -217,7 +211,8 @@ def include_sample_genotypes(variant: Variant, sample_list: list, graph: Graph):
             graph.add((genotype_instance, HAS_QUALITY_PROP, zygosity))
             genotype_string = get_genotype_string(genotype)
             if genotype_string is not None:
-                graph.add((genotype_instance, RDFS.label, Literal(genotype_string)))
+                # graph.add((genotype_instance, RDFS.label, Literal(genotype_string)))
+                add_label(graph, genotype_instance, genotype_string)
 
             if genotype[0] != -1:
                 first_sequence_genotype = get_genotype_sequence_instance(genotype[0], variant)
@@ -251,25 +246,25 @@ def include_sample_genotypes(variant: Variant, sample_list: list, graph: Graph):
 
 def include_prefixes(graph: Graph):
     nm = NamespaceManager(graph, bind_namespaces="rdflib")
-    nm.bind(prefix='sample', namespace=Namespace("https://namespaces.org/sample#"), override=True,
+    nm.bind(prefix='sample', namespace=Namespace(SAMPLE_NS), override=True,
             replace=True)
-    nm.bind(prefix='chr', namespace=Namespace("https://namespaces.org/chromosome#"), override=True,
+    nm.bind(prefix='landmark', namespace=Namespace(LANDMARK_NS), override=True,
             replace=True)
-    nm.bind(prefix='var', namespace=Namespace("https://namespaces.org/variant#"), override=True,
+    nm.bind(prefix='var', namespace=Namespace(VARIANT_NS), override=True,
             replace=True)
-    nm.bind(prefix='pos', namespace=Namespace("https://namespaces.org/position#"), override=True,
+    nm.bind(prefix='pos', namespace=Namespace(POSITION_NS), override=True,
             replace=True)
-    nm.bind(prefix='alt', namespace=Namespace("https://namespaces.org/alt#"), override=True,
+    nm.bind(prefix='alt', namespace=Namespace(SEQUENCE_VARIANT_NS), override=True,
             replace=True)
-    nm.bind(prefix='ref', namespace=Namespace("https://namespaces.org/ref#"), override=True,
+    nm.bind(prefix='ref', namespace=Namespace(SEQUENCE_REFERENCE_NS), override=True,
             replace=True)
-    nm.bind(prefix='gt', namespace=Namespace("https://namespaces.org/gt#"), override=True,
+    nm.bind(prefix='gt', namespace=Namespace(GENOTYPE_NS), override=True,
             replace=True)
-    nm.bind(prefix='faldo', namespace=Namespace("http://biohackathon.org/resource/faldo#"), override=True,
+    nm.bind(prefix='faldo', namespace=Namespace(FALDO_NS), override=True,
             replace=True)
-    nm.bind(prefix='obo', namespace=Namespace("http://purl.obolibrary.org/obo/"), override=True, replace=True)
-    nm.bind(prefix='gfvo', namespace=Namespace("https://github.com/BioInterchange/Ontologies/gfvo#"), override=True, replace=True)
-    nm.bind(prefix='up', namespace=Namespace('http://purl.uniprot.org/core/'), override=True, replace=True)
+    nm.bind(prefix='so', namespace=Namespace(SEQUENCE_ONTOLOGY_NS), override=True, replace=True)
+    nm.bind(prefix='gfvo', namespace=Namespace(GFVO_NS), override=True, replace=True)
+    nm.bind(prefix='up', namespace=Namespace(UNIPROT_NS), override=True, replace=True)
 
 def generate_graph_for_vcf(vcf_file, threads: int) -> Graph:
     print(f"Processing {vcf_file}")
