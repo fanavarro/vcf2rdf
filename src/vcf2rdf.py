@@ -6,7 +6,7 @@ from cyvcf2 import VCF, Variant
 from rdflib.namespace import NamespaceManager, Namespace
 from iri_utils import *
 from namespaces import *
-from src.gfvo_utils import add_identifier, add_label, add_location
+from gfvo_utils import add_identifier, add_label, add_location
 
 SAMPLE_CLASS = URIRef(GFVO_NS + 'Sample')
 CHROMOSOME_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '0000340')
