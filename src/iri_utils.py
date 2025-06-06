@@ -1,3 +1,4 @@
+import re
 import urllib
 import uuid
 import hashlib
@@ -73,3 +74,21 @@ def get_sample_iri(sample_name: str):
 def get_genotype_iri(sample_name: str, variant: Variant):
     variant_id = get_variant_id(variant)
     return URIRef(GENOTYPE_NS + sample_name + '-' + variant_id)
+
+def get_transcript_iri(transcript_id: str):
+    return URIRef(TRANSCRIPT_NS + transcript_id)
+
+def get_gene_iri(gene_id: str):
+    return URIRef(GENE_NS + gene_id)
+
+def get_annotation_property_iri(annotation_name: str):
+    return URIRef(GFVO_ANN_EXT_NS + replace_special_chars_for_iri(annotation_name))
+
+def replace_special_chars_for_iri(iri: str) -> str:
+    new_iri = (iri
+               .replace('.', '_')
+               .replace(' ','_')
+               .replace('/', '_')
+               .replace('"', '')
+               .lower())
+    return re.sub(r'_+', '_', new_iri)

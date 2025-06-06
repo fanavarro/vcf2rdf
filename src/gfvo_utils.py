@@ -5,6 +5,7 @@ from iri_utils import get_position_iri, get_chromosome_iri, get_variant_iri
 from namespaces import GFVO_NS, DCTERMS_NS, FALDO_NS
 
 IDENTIFIER_CLASS = URIRef(GFVO_NS + 'Identifier')
+ALIAS_CLASS = URIRef(GFVO_NS + 'Alias')
 LABEL_CLASS = URIRef(GFVO_NS + 'Label')
 HAS_VALUE_PROP = URIRef(GFVO_NS + "hasValue")
 HAS_ATTRIBUTE_PROP = URIRef(GFVO_NS + "hasAttribute")
@@ -16,6 +17,7 @@ LOCATION_PROP = URIRef(FALDO_NS + 'location')
 HAS_PART_PROP = URIRef(GFVO_NS + "hasPart")
 LOCUS_CLASS = URIRef(GFVO_NS + "Locus")
 IS_LOCATED_ON_PROP = URIRef(GFVO_NS + 'isLocatedOn')
+
 
 def add_identifier(graph: Graph, instance: URIRef, identifier: str):
     identifier_bnode = BNode()
@@ -52,3 +54,9 @@ def add_location(graph: Graph, variant: Variant):
 
     graph.add((variant_instance, HAS_PART_PROP, locus_instance))
     graph.add((variant_instance, IS_LOCATED_ON_PROP, chromosome_instance))
+
+def add_alias(graph: Graph, instance: URIRef, alias: str):
+    alias_bnode = BNode()
+    graph.add((alias_bnode, RDF.type, ALIAS_CLASS))
+    graph.add((alias_bnode, HAS_VALUE_PROP, Literal(alias)))
+    graph.add((instance, HAS_ATTRIBUTE_PROP, alias_bnode))

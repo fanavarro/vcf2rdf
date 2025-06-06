@@ -109,3 +109,53 @@ where {
     ?sample a gfvo:Sample .
 }
 ```
+
+### Get variant annotations
+
+The annotations are stored as IRIs when possible, referring genes, transcripts and alleles:
+
+```
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX gfvo: <https://github.com/BioInterchange/Ontologies/gfvo#>
+PREFIX so: <http://purl.obolibrary.org/obo/SO_>
+PREFIX fn: <https://github.com/BioInterchange/Ontologies/gfvo_ann_ext#>
+select  *
+where {
+    ?variant a so:0001059 .
+    ?variant gfvo:hasAnnotation [
+        a fn:FunctionalAnnotation ;
+    	so:associated_with [ rdfs:label ?effect ] ;
+    	gfvo:refersTo ?allele ;
+        gfvo:refersTo ?feature ;
+    	gfvo:refersTo ?gene ;
+        gfvo:hasAttribute [
+            a fn:Impact ;
+        	gfvo:hasValue ?impact 
+        ] 
+    ].
+    ?allele a gfvo:SequenceVariant .
+    ?feature a gfvo:Feature .
+    ?gene a so:0000704 .      
+} limit 500
+```
+
+Additionally, the annotations are stored through dynamically generated annotation properties to store the exact text of the annotation:
+
+```
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX gfvo: <https://github.com/BioInterchange/Ontologies/gfvo#>
+PREFIX so: <http://purl.obolibrary.org/obo/SO_>
+PREFIX fn: <https://github.com/BioInterchange/Ontologies/gfvo_ann_ext#>
+select  *
+where {
+    #values ?variant { <https://longseq.com/variant#000eb15a-5f08-5346-5751-143c79b6215f> } .
+    ?variant a so:0001059 .
+    ?variant gfvo:hasAnnotation [
+        a fn:FunctionalAnnotation ;
+    	?annotation ?annotationValue
+    ].
+    FILTER(regex(str(?annotation), str(fn:) ) )
+} limit 500
+```

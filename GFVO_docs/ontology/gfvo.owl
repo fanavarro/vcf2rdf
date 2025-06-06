@@ -13,6 +13,7 @@
      xmlns:skos="http://www.w3.org/2004/02/skos/core#"
      xmlns:spin="http://spinrdf.org/spin#"
      xmlns:faldo="http://biohackathon.org/resource/faldo#"
+     xmlns:terms="http://purl.org/dc/terms/"
      xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#">
     <owl:Ontology rdf:about="https://github.com/BioInterchange/Ontologies/gfvo#">
         <owl:imports rdf:resource="http://biohackathon.org/resource/faldo.ttl"/>
@@ -65,9 +66,45 @@
     
 
 
+    <!-- http://purl.org/dc/elements/1.1/alternative -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/alternative"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/contributor -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/contributor"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/creator -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/creator"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/description -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/description"/>
+    
+
+
     <!-- http://purl.org/dc/elements/1.1/identifier -->
 
     <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/identifier"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/rights -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/rights"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/title -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/title"/>
     
 
 
@@ -614,8 +651,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000004">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#MaterialEntity"/>
-        <dc:identifier>SIO_000004</dc:identifier>
         <dc:description xml:lang="en">A material entity is a physical entity that is spatially extended, exists as a whole at any point in time and has mass.</dc:description>
+        <dc:identifier>SIO_000004</dc:identifier>
         <sio:subset>core</sio:subset>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">material entity</rdfs:label>
@@ -627,8 +664,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000005">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Quality"/>
-        <dc:identifier>SIO_000005</dc:identifier>
         <dc:description xml:lang="en">A quality is an attribute that is intrinsically associated with its bearer (or its parts), but whose presence/absence and observed/measured value may vary.</dc:description>
+        <dc:identifier>SIO_000005</dc:identifier>
         <sio:subset>core</sio:subset>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">quality</rdfs:label>
@@ -640,8 +677,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000006">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Process"/>
-        <dc:identifier>SIO_000006</dc:identifier>
         <dc:description xml:lang="en">A process is an entity that is identifiable only through the unfolding of time, has temporal parts, and unless otherwise specified/predicted, cannot be identified from any instant of time in which it exists.</dc:description>
+        <dc:identifier>SIO_000006</dc:identifier>
         <sio:subset>core</sio:subset>
         <sio:subset>process+</sio:subset>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
@@ -654,8 +691,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000015">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#InformationContentEntity"/>
-        <dc:identifier>SIO_000015</dc:identifier>
         <dc:description xml:lang="en">information content entity is an object that requires some background knowledge or procedure to correctly interpret.</dc:description>
+        <dc:identifier>SIO_000015</dc:identifier>
         <sio:subset>core</sio:subset>
         <sio:subset>ice+</sio:subset>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
@@ -668,8 +705,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000030">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Sequence"/>
-        <dc:identifier>SIO_000030</dc:identifier>
         <dc:description xml:lang="en">A sequence is a primary structure descriptor in which each of the letters in the string represents a monomeric unit (residue) in which adjacent letters represent the connectivity between the monomeric units.</dc:description>
+        <dc:identifier>SIO_000030</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">biopolymer sequence</rdfs:label>
     </owl:Class>
@@ -680,8 +717,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000052">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Quantity"/>
-        <dc:identifier>SIO_000052</dc:identifier>
         <dc:description xml:lang="en">A quantity is an informational entity that gives the magnitude of a property.</dc:description>
+        <dc:identifier>SIO_000052</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">quantity</rdfs:label>
     </owl:Class>
@@ -692,8 +729,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000056">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Locus"/>
-        <dc:identifier>SIO_000056</dc:identifier>
         <dc:description xml:lang="en">A measurement of a spatial location relative to a frame of reference or other objects.</dc:description>
+        <dc:identifier>SIO_000056</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">position</rdfs:label>
     </owl:Class>
@@ -704,8 +741,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000115">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Identifier"/>
-        <dc:identifier>SIO_000115</dc:identifier>
         <dc:description xml:lang="en">An identifier is a label that specifically refers to (identifies) an entity (instance/type).</dc:description>
+        <dc:identifier>SIO_000115</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">identifier</rdfs:label>
     </owl:Class>
@@ -716,8 +753,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000116">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Name"/>
-        <dc:identifier>SIO_000116</dc:identifier>
         <dc:description xml:lang="en">A name is a label used to identify an entity.</dc:description>
+        <dc:identifier>SIO_000116</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">name</rdfs:label>
     </owl:Class>
@@ -728,8 +765,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000152">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Note"/>
-        <dc:identifier>SIO_000152</dc:identifier>
         <dc:description xml:lang="en">A note is a brief document.</dc:description>
+        <dc:identifier>SIO_000152</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">note</rdfs:label>
     </owl:Class>
@@ -740,8 +777,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000179">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Label"/>
-        <dc:identifier>SIO_000179</dc:identifier>
         <dc:description xml:lang="en">a label is a term that is associated with some entity</dc:description>
+        <dc:identifier>SIO_000179</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">label</rdfs:label>
     </owl:Class>
@@ -752,8 +789,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000315">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#FunctionalSpecification"/>
-        <dc:identifier>SIO_000315</dc:identifier>
         <dc:description xml:lang="en">A functional specification is a specification that describes the characteristics of an object.</dc:description>
+        <dc:identifier>SIO_000315</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">functional specification</rdfs:label>
     </owl:Class>
@@ -764,8 +801,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000396">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#File"/>
-        <dc:identifier>SIO_000396</dc:identifier>
         <dc:description xml:lang="en">A file is an information-bearing object that contains a physical embodiment of some information using a particular character encoding.</dc:description>
+        <dc:identifier>SIO_000396</dc:identifier>
         <sio:equivalentTo rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://www.w3.org/ns/dcat#Distribution</sio:equivalentTo>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">file</rdfs:label>
@@ -777,8 +814,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000614">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Attribute"/>
-        <dc:identifier>SIO_000614</dc:identifier>
         <dc:description xml:lang="en">An attribute is a characteristic of some entity.</dc:description>
+        <dc:identifier>SIO_000614</dc:identifier>
         <sio:subset>core</sio:subset>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">attribute</rdfs:label>
@@ -790,8 +827,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000616">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Collection"/>
-        <dc:identifier>SIO_000616</dc:identifier>
         <dc:description xml:lang="en">A collection is a set for which there exists at least one member, although any member need not to exist at any point in the collection&apos;s existence.</dc:description>
+        <dc:identifier>SIO_000616</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">collection</rdfs:label>
     </owl:Class>
@@ -802,8 +839,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000653">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Version"/>
-        <dc:identifier>SIO_000653</dc:identifier>
         <dc:description>A version label is a label for a particular form or variation of an earlier or original type.</dc:description>
+        <dc:identifier>SIO_000653</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">version label</rdfs:label>
     </owl:Class>
@@ -814,8 +851,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000776">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Object"/>
-        <dc:identifier>SIO_000776</dc:identifier>
         <dc:description xml:lang="en">An object is an entity that is wholly identifiable at any instant of time during which it exists.</dc:description>
+        <dc:identifier>SIO_000776</dc:identifier>
         <sio:subset>core</sio:subset>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">object</rdfs:label>
@@ -827,8 +864,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000784">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Hermaphrodite"/>
-        <dc:identifier>SIO_000784</dc:identifier>
         <dc:description xml:lang="en">hermaphrodite is a biological sex of an individual with both male and female sexual organs.</dc:description>
+        <dc:identifier>SIO_000784</dc:identifier>
         <sio:equivalentTo>PATO:0001827</sio:equivalentTo>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">hermaphrodite</rdfs:label>
@@ -840,8 +877,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000899">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Chromosome"/>
-        <dc:identifier>SIO_000899</dc:identifier>
         <dc:description xml:lang="en">A chromosome is a molecular complex of circular or linear DNA and bound proteins.</dc:description>
+        <dc:identifier>SIO_000899</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">chromosome</rdfs:label>
     </owl:Class>
@@ -852,8 +889,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000984">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Genome"/>
-        <dc:identifier>SIO_000984</dc:identifier>
         <dc:description xml:lang="en">A genome is a collection of nucleic acids.</dc:description>
+        <dc:identifier>SIO_000984</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">genome</rdfs:label>
     </owl:Class>
@@ -864,8 +901,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_000999">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#ExperimentalMethod"/>
-        <dc:identifier>SIO_000999</dc:identifier>
         <dc:description xml:lang="en">A procedure is a process that attempts to achieve one or more objectives by following an established set of actions.</dc:description>
+        <dc:identifier>SIO_000999</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">procedure</rdfs:label>
     </owl:Class>
@@ -876,8 +913,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_001050">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Sample"/>
-        <dc:identifier>SIO_001050</dc:identifier>
         <dc:description xml:lang="en">A sample is a limited quantity of something (e.g. an individual or set of individuals from a population, or a portion of a substance) to be used for testing, analysis, inspection, investigation, demonstration, or trial use.</dc:description>
+        <dc:identifier>SIO_001050</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">sample</rdfs:label>
     </owl:Class>
@@ -888,8 +925,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_001076">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#DNAMicroarray"/>
-        <dc:identifier>SIO_001076</dc:identifier>
         <dc:description xml:lang="en">A microarray experiment is an experiment that involves a microarray device to measure the expression of one or more genes.</dc:description>
+        <dc:identifier>SIO_001076</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">microarray experiment</rdfs:label>
     </owl:Class>
@@ -900,8 +937,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_001079">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Genotype"/>
-        <dc:identifier>SIO_001079</dc:identifier>
         <dc:description xml:lang="en">A genotype is a functional specification of a biological entity in terms of its genetic composition (or lack thereof).</dc:description>
+        <dc:identifier>SIO_001079</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">genotype</rdfs:label>
     </owl:Class>
@@ -912,8 +949,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_001167">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Comment"/>
-        <dc:identifier>SIO_001167</dc:identifier>
         <dc:description xml:lang="en">A comment is a verbal or written remark often related to an added piece of information, or an observation or statement.</dc:description>
+        <dc:identifier>SIO_001167</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">comment</rdfs:label>
     </owl:Class>
@@ -924,9 +961,9 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_001171">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#ExternalReference"/>
-        <dc:identifier>SIO_001171</dc:identifier>
         <dc:alternative>dbxref</dc:alternative>
         <dc:description xml:lang="en">A database cross-reference is an association between one data item and another.</dc:description>
+        <dc:identifier>SIO_001171</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">database cross-reference</rdfs:label>
     </owl:Class>
@@ -937,9 +974,9 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_001241">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Catalog"/>
-        <dc:identifier>SIO_001241</dc:identifier>
         <dc:alternative xml:lang="en">registry</dc:alternative>
         <dc:description xml:lang="en">A catalog is a systemic collection of items of the same type.</dc:description>
+        <dc:identifier>SIO_001241</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">catalog</rdfs:label>
     </owl:Class>
@@ -950,8 +987,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_001243">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Likelihood"/>
-        <dc:identifier>SIO_001243</dc:identifier>
         <dc:description xml:lang="en">Likelihood is the hypothetical probability that an event that has already occurred would yield a specific outcome.</dc:description>
+        <dc:identifier>SIO_001243</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">likelihood</rdfs:label>
     </owl:Class>
@@ -962,8 +999,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010000">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#SequencedIndividual"/>
-        <dc:identifier>SIO_010000</dc:identifier>
         <dc:description xml:lang="en">A biological organisn is a biological entity that consists of one or more cells and is capable of genomic replication (independently or not).</dc:description>
+        <dc:identifier>SIO_010000</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">organism</rdfs:label>
     </owl:Class>
@@ -974,8 +1011,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010001">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Cell"/>
-        <dc:identifier>SIO_010001</dc:identifier>
         <dc:description xml:lang="en">A cell is a biological entity that is contained by a plasma membrane.</dc:description>
+        <dc:identifier>SIO_010001</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">cell</rdfs:label>
     </owl:Class>
@@ -986,8 +1023,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010004">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#ChemicalEntity"/>
-        <dc:identifier>SIO_010004</dc:identifier>
         <dc:description xml:lang="en">A chemical entity is a material entity that pertains to chemistry.</dc:description>
+        <dc:identifier>SIO_010004</dc:identifier>
         <sio:equivalentTo>CHEBI:23367</sio:equivalentTo>
         <sio:subset>chemical+</sio:subset>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
@@ -1001,10 +1038,10 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010015">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#ProteinSequence"/>
-        <dc:identifier>SIO_010015</dc:identifier>
         <dc:alternative xml:lang="en">amino acid sequence</dc:alternative>
         <dc:alternative xml:lang="en">polypeptide sequence</dc:alternative>
         <dc:description xml:lang="en">A protein acid sequence is the character representation of the molecular structure of a protein.</dc:description>
+        <dc:identifier>SIO_010015</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">protein sequence</rdfs:label>
     </owl:Class>
@@ -1015,8 +1052,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010016">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#DNASequence"/>
-        <dc:identifier>SIO_010016</dc:identifier>
         <dc:description xml:lang="en">A nucleic acid sequence is a symbolic representation of the sequence of nucleic acid residues in a nucleic acid.</dc:description>
+        <dc:identifier>SIO_010016</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">nucleic acid sequence</rdfs:label>
     </owl:Class>
@@ -1027,8 +1064,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010029">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Sex"/>
-        <dc:identifier>SIO_010029</dc:identifier>
         <dc:description xml:lang="en">biological sex is the quality of a biological organism based on reproductive function or organs.</dc:description>
+        <dc:identifier>SIO_010029</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">biological sex</rdfs:label>
     </owl:Class>
@@ -1039,8 +1076,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010046">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#BiologicalEntity"/>
-        <dc:identifier>SIO_010046</dc:identifier>
         <dc:description xml:lang="en">A biological entity is a heterogeneous substance that contains genomic material or is the product of a biological process.</dc:description>
+        <dc:identifier>SIO_010046</dc:identifier>
         <sio:subset>chemical-</sio:subset>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">biological entity</rdfs:label>
@@ -1052,8 +1089,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010048">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Male"/>
-        <dc:identifier>SIO_010048</dc:identifier>
         <dc:description xml:lang="en">male is a biological sex of an individual with male sexual organs.</dc:description>
+        <dc:identifier>SIO_010048</dc:identifier>
         <sio:equivalentTo>PATO:0000384</sio:equivalentTo>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">male</rdfs:label>
@@ -1065,8 +1102,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010052">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Female"/>
-        <dc:identifier>SIO_010052</dc:identifier>
         <dc:description xml:lang="en">female is a biological sex of an individual with female sexual organs.</dc:description>
+        <dc:identifier>SIO_010052</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">female</rdfs:label>
     </owl:Class>
@@ -1077,8 +1114,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010056">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Phenotype"/>
-        <dc:identifier>SIO_010056</dc:identifier>
         <dc:description xml:lang="en">A phenotype is an observable characteristic of an individual.</dc:description>
+        <dc:identifier>SIO_010056</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">phenotype</rdfs:label>
     </owl:Class>
@@ -1089,8 +1126,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010065">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Feature"/>
-        <dc:identifier>SIO_010065</dc:identifier>
         <dc:description xml:lang="en">bioinformatic data is data genereated or used for computer-based investigations of biological phenomena.</dc:description>
+        <dc:identifier>SIO_010065</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">bioinformatic data</rdfs:label>
     </owl:Class>
@@ -1101,8 +1138,8 @@ This property can be used to express &quot;Derives_from&quot; relations in GFF3.
 
     <owl:Class rdf:about="http://semanticscience.org/resource/SIO_010074">
         <owl:equivalentClass rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#AminoAcid"/>
-        <dc:identifier>SIO_010074</dc:identifier>
         <dc:description xml:lang="en">An amino acid residue is a submolecule of an amino acid that is part of a larger molecule.</dc:description>
+        <dc:identifier>SIO_010074</dc:identifier>
         <rdfs:isDefinedBy rdf:resource="http://semanticscience.org/ontology/sio.owl"/>
         <rdfs:label xml:lang="en">amino acid residue</rdfs:label>
     </owl:Class>
@@ -2930,6 +2967,22 @@ Can be used to indicate a false &quot;Is_circular&quot; attribute in GFF3 and GV
         <rdfs:comment xml:lang="en">Zygosity denotes the similarities of a specific allele in the genome of an organism. Subclasses can be utilized to directly encode zygosity (e.g., &quot;Zygosity&quot; attribute in GVF files), or, encode zygosity indirectly by inferring it from genotype descriptions (case in VCF files).</rdfs:comment>
         <rdfs:label>Zygosity</rdfs:label>
         <rdfs:seeAlso>http://en.wikipedia.org/wiki/Zygosity</rdfs:seeAlso>
+    </owl:Class>
+    
+
+
+    <!-- https://github.com/BioInterchange/Ontologies/gfvo_ann_ext#Annotation -->
+
+    <owl:Class rdf:about="https://github.com/BioInterchange/Ontologies/gfvo_ann_ext#Annotation">
+        <rdfs:subClassOf rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo#Attribute"/>
+    </owl:Class>
+    
+
+
+    <!-- https://github.com/BioInterchange/Ontologies/gfvo_ann_ext#FunctionalAnnotation -->
+
+    <owl:Class rdf:about="https://github.com/BioInterchange/Ontologies/gfvo_ann_ext#FunctionalAnnotation">
+        <rdfs:subClassOf rdf:resource="https://github.com/BioInterchange/Ontologies/gfvo_ann_ext#Annotation"/>
     </owl:Class>
     
 
