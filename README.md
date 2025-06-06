@@ -6,15 +6,19 @@ This python scripts takes a set of VCF files and generates an RDF file describin
 ## Usage
 
 ```
-python vcf2rdf [-h] --input INPUT [INPUT ...] --output OUTPUT
-               [--threads THREADS]
+usage: vcf2rdf [-h] --input INPUT [INPUT ...] [--merged_output MERGED_OUTPUT]
+               [--output_folder OUTPUT_FOLDER] [--threads THREADS]
 
 options:
   -h, --help            show this help message and exit
   --input INPUT [INPUT ...], -i INPUT [INPUT ...]
                         Input VCF files.
-  --output OUTPUT, -o OUTPUT
-                        Output RDF file.
+  --merged_output MERGED_OUTPUT, -o MERGED_OUTPUT
+                        Output RDF file. If set, all VCFs at input will be
+                        merged into the same RDF file. If not, an RDF per VCF
+                        will be created
+  --output_folder OUTPUT_FOLDER, -d OUTPUT_FOLDER
+                        Output folder for the RDF files.
   --threads THREADS, -t THREADS
                         Output RDF file.
 ```
@@ -24,6 +28,7 @@ Examples of use:
   - `python vcf2rdf -i vcf_folder/*.vcf -o graph.ttl -t4`: Process all vcf files in the folder `vcf_folder` and store the resulting RDF graph into `graph.ttl`. Use 4 threads.
   - `python vcf2rdf -i file.vcf -o graph.ttl -t4`: Process the file `file.vcf` and store the resulting RDF graph into `graph.ttl`. Use 4 threads.
   - `python vcf2rdf -i file1.vcf file2.vcf -o graph.ttl -t4`: Process the files `file1.vcf` and `file2.vcf` and store the resulting RDF graph into `graph.ttl`. Use 4 threads.
+  - `python vcf2rdf -i file1.vcf file2.vcf -d variants_ttl -t4`: Process the files `file1.vcf` and `file2.vcf` and store the resulting RDF graphs into `variants_ttl/file1.ttl` and `variants_ttl/file1.ttl`. Use 4 threads.
 
 
 ## Example of queries of the resulting graph
