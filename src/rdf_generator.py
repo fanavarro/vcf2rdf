@@ -174,6 +174,8 @@ def add_annotation(variant: Variant, annotation: dict, graph: Graph):
 
     # Add annotation as simple text by annotation properties
     for key, value in annotation.items():
+        if value is None or value.strip() == '':
+            continue
         annotation_property_iri = get_annotation_property_iri(key)
         graph.add((functional_annotation, annotation_property_iri, Literal(value, datatype=XSD.string)))
         graph.add((annotation_property_iri, RDFS.label, Literal(key, datatype=XSD.string)))
