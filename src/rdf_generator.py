@@ -8,7 +8,7 @@ from cyvcf2 import VCF
 from rdflib.namespace import NamespaceManager, Namespace
 from iri_utils import *
 from namespaces import *
-from gfvo_utils import add_identifier, add_label, add_location, add_alias
+from gfvo_utils import add_identifier, add_label, add_location, add_alias, IS_LOCATED_ON_PROP
 from info_ann_parser import parse_info_ann
 from biotypes import TranscriptBiotypeLookup, GeneBiotypeLookup
 from ontology_utils import OntologyLookUp
@@ -40,6 +40,7 @@ GENE_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '0000704')
 FUNCTIONAL_ANNOTATION_CLASS = URIRef(GFVO_ANN_EXT_NS + 'FunctionalAnnotation')
 IMPACT_CLASS = URIRef(GFVO_ANN_EXT_NS + 'Impact')
 GFVO_FEATURE_CLASS = URIRef(GFVO_NS + 'Feature')
+INTERGENIC_REGION_CLASS = URIRef(SEQUENCE_ONTOLOGY_NS + '0000605')
 
 LENGTH_PROP = URIRef(UNIPROT_NS + 'length')
 REFERENCE_PROP = URIRef(FALDO_NS + 'reference')
@@ -79,12 +80,16 @@ def include_ref_seqs(vcf_info: VCF, graph: Graph):
     for i in range(len(seqnames)):
         seqname = seqnames[i]
         seqlen = seqlens[i]
-        chromosome_instance = get_landmark_iri_from_chromosome_name(seqname)
-        graph.add((chromosome_instance, RDF.type, CHROMOSOME_CLASS))
-        graph.add((chromosome_instance, RDF.type, LANDMARK_CLASS))
-        # graph.add((chromosome_instance, RDFS.label, Literal(seqname)))
-        add_label(graph, chromosome_instance, seqname)
-        graph.add((chromosome_instance, LENGTH_PROP, Literal(seqlen, datatype=XSD.int)))
+        chromosome_landmark_instance = get_landmark_iri_from_chromosome_name(seqname)
+        graph.add((chromosome_landmark_instance, RDF.type, LANDMARK_CLASS))
+        graph.add((chromosome_landmark_instance, LENGTH_PROP, Literal(seqlen, datatype=XSD.int)))
+
+
+        chromosome_feature_instance = get_chromosome_feature_iri_from_chromosome_name(seqname)
+        graph.add((chromosome_feature_instance, RDF.type, CHROMOSOME_CLASS))
+        add_label(graph, chromosome_feature_instance, seqname)
+
+        graph.add((chromosome_feature_instance, IS_LOCATED_ON_PROP, chromosome_landmark_instance))
 
 def get_sv_type_class(variant) -> URIRef:
     sv_type = variant.INFO.get('SVTYPE')
@@ -139,6 +144,22 @@ def get_ann_gene_instance(annotation, graph):
     else:
         return None
 
+
+def add_intergenic_region(feature_id, graph):
+    feature_instance = get_intergenic_region_iri(feature_id)
+    graph.add((feature_instance, RDF.type, INTERGENIC_REGION_CLASS))
+    add_label(graph, feature_instance, feature_id)
+    return feature_instance
+
+
+def add_chromosome_instance(chromosome_id, graph):
+    chromosome_feature_instance = get_chromosome_feature_iri_from_chromosome_name(chromosome_id)
+    graph.add((chromosome_feature_instance, RDF.type, CHROMOSOME_CLASS))
+    add_label(graph, chromosome_feature_instance, chromosome_id)
+    add_identifier(graph, chromosome_feature_instance, chromosome_id)
+    return chromosome_feature_instance
+
+
 def get_ann_feature_instance(annotation, graph) -> URIRef:
     feature_instance = None
     feature_type = annotation.get('Feature_Type')
@@ -150,7 +171,7 @@ def get_ann_feature_instance(annotation, graph) -> URIRef:
         feature_instance = add_transcript_instance(transcript_id=feature_id, biotype_name=biotype, graph=graph)
 
     elif feature_type == 'intergenic_region':
-        pass
+        feature_instance = add_intergenic_region(feature_id=feature_id, graph=graph)
     elif feature_type == 'gene':
         biotype = annotation.get('Gene_BioType')
         feature_instance = add_gene_instance(gene_id=feature_id, biotype_name=biotype, graph=graph)
@@ -159,6 +180,8 @@ def get_ann_feature_instance(annotation, graph) -> URIRef:
         # In the genome annotations, the "." is replaced by "-", but some gene variants are not included.
         biotype = annotation.get('Gene_BioType')
         feature_instance = add_gene_instance(gene_id=feature_id.replace('.', '-'), biotype_name=biotype, graph=graph)
+    elif feature_type == 'chromosome':
+        feature_instance = add_chromosome_instance(chromosome_id=feature_id, graph=graph)
 
     if feature_instance is not None:
         graph.add((feature_instance, RDF.type, GFVO_FEATURE_CLASS))

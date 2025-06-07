@@ -1,7 +1,7 @@
 from cyvcf2 import Variant
 from rdflib import URIRef, Graph, BNode, RDF, RDFS, Literal, XSD
 
-from iri_utils import get_position_iri, get_chromosome_iri, get_variant_iri
+from iri_utils import get_position_iri, get_chromosome_landmark_iri, get_variant_iri
 from namespaces import GFVO_NS, DCTERMS_NS, FALDO_NS
 
 IDENTIFIER_CLASS = URIRef(GFVO_NS + 'Identifier')
@@ -39,7 +39,7 @@ def add_label(graph: Graph, instance: URIRef, label: str):
     graph.add((instance, RDFS.label, Literal(label)))
 
 def add_location(graph: Graph, variant: Variant):
-    chromosome_instance = get_chromosome_iri(variant)
+    chromosome_instance = get_chromosome_landmark_iri(variant)
     variant_instance = get_variant_iri(variant)
 
     locus_instance = BNode()
