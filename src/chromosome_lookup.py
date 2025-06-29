@@ -22,4 +22,7 @@ class ChromosomeLookup:
 
 
     def get_refseq_identifier(self, chromosome_name: str) -> str:
-        return self.dictionary[chromosome_name]
+        if chromosome_name in self.dictionary:
+            return self.dictionary[chromosome_name]
+        else:
+            return None

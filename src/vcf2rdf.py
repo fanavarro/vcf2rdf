@@ -10,6 +10,7 @@ def create_arg_parser():
                                                                'will be merged into the same RDF file. If not, an RDF per '
                                                                'VCF will be created')
     parser.add_argument('--output_folder', '-d', required=False, help='Output folder for the RDF files.')
+    parser.add_argument('--format', '-f', required=False, default='nt', help='Output format (nt, ttl, xml, pretty-xml, n3, trig, trix, json-ld)')
     parser.add_argument('--threads', '-t', required=False, default=1, type=int, help='Output RDF file.')
     return parser.parse_args()
 
@@ -18,6 +19,6 @@ def create_arg_parser():
 if __name__ == '__main__':
     arguments = create_arg_parser()
     if arguments.merged_output:
-        generate_rdf(arguments.input, arguments.merged_output, arguments.threads)
+        generate_rdf(arguments.input, arguments.merged_output, arguments.format, arguments.threads)
     else:
-        generate_rdf_per_vcf(arguments.input, arguments.output_folder, arguments.threads)
+        generate_rdf_per_vcf(arguments.input, arguments.output_folder, arguments.format, arguments.threads)

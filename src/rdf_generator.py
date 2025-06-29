@@ -1,9 +1,11 @@
 import concurrent.futures
+import encodings
 import os
+import time
 import traceback
 from pathlib import Path
 
-from rdflib import Graph, RDF, Literal, XSD, BNode, RDFS
+from rdflib import Graph, RDF, Literal, XSD, BNode, RDFS, OWL
 from cyvcf2 import VCF
 from rdflib.namespace import NamespaceManager, Namespace
 from iri_utils import *
@@ -202,6 +204,7 @@ def add_annotation(variant: Variant, annotation: dict, graph: Graph):
         annotation_property_iri = get_annotation_property_iri(key)
         graph.add((functional_annotation, annotation_property_iri, Literal(value, datatype=XSD.string)))
         graph.add((annotation_property_iri, RDFS.label, Literal(key, datatype=XSD.string)))
+        graph.add((annotation_property_iri, RDF.type, OWL.AnnotationProperty))
 
     # Try to represent the annotation by linking transcript, genes, etc...
     # Get instance of the affected feature (transcript or gene or intergenic region...)
@@ -427,6 +430,8 @@ def include_prefixes(graph: Graph):
     nm.bind(prefix='so', namespace=Namespace(SEQUENCE_ONTOLOGY_NS), override=True, replace=True)
     nm.bind(prefix='gfvo', namespace=Namespace(GFVO_NS), override=True, replace=True)
     nm.bind(prefix='up', namespace=Namespace(UNIPROT_NS), override=True, replace=True)
+    nm.bind(prefix='gfvo-ann', namespace=Namespace(GFVO_ANN_EXT_NS), override=True, replace=True)
+    nm.bind(prefix='obo', namespace=Namespace('http://purl.obolibrary.org/obo/'), override=True, replace=True)
 
 def get_ann_field_header(vcf: VCF):
     try:
@@ -448,22 +453,22 @@ def generate_graph_for_vcf(vcf_file, threads: int) -> Graph:
         include_variant(variant, ann_field_info, sample_list, vcf_graph)
     return vcf_graph
 
-def generate_rdf_file_for_vcf(vcf_file: Path, output_folder: Path, threads: int):
-    output_file = Path(output_folder, vcf_file.stem + ".ttl")
+def generate_rdf_file_for_vcf(vcf_file: Path, output_folder: Path, output_format: str, threads: int):
+    output_file = Path(output_folder, vcf_file.stem + "." + output_format)
     graph: Graph = generate_graph_for_vcf(vcf_file, threads = 1)
     include_prefixes(graph)
-    graph.serialize(output_file, format="ttl")
+    graph.serialize(output_file, format=output_format, encoding=encodings.utf_8.getregentry().name)
     del graph
     return output_file
 
 
-def generate_rdf_per_vcf(vcf_files: list, output_folder: Path, threads: int):
+def generate_rdf_per_vcf(vcf_files: list, output_folder: Path, output_format: str, threads: int):
     with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
         future_dict = {}
         for vcf_file in vcf_files:
             if output_folder is None:
                 output_folder = Path(vcf_file).parent
-            future_dict[vcf_file] = executor.submit(generate_rdf_file_for_vcf,Path(vcf_file), output_folder, 1)
+            future_dict[vcf_file] = executor.submit(generate_rdf_file_for_vcf,Path(vcf_file), output_folder, output_format, 1)
 
         for vcf_file, future in future_dict.items():
             try:
@@ -475,7 +480,7 @@ def generate_rdf_per_vcf(vcf_files: list, output_folder: Path, threads: int):
                 print(f"{vcf_file} processed. Results saved to {rdf_file}")
 
 
-def generate_rdf(vcf_files: list, output_rdf_file: Path, threads: int):
+def generate_rdf(vcf_files: list, output_rdf_file: Path, output_format: str, threads: int):
     graph: Graph = Graph()
     with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
         future_dict = {}
@@ -494,5 +499,5 @@ def generate_rdf(vcf_files: list, output_rdf_file: Path, threads: int):
 
     include_prefixes(graph)
     print(f"Saving graph into {output_rdf_file}")
-    graph.serialize(output_rdf_file, format="ttl")
+    graph.serialize(output_rdf_file, format=output_format, encoding=encodings.utf_8.getregentry().name)
     print("Done")

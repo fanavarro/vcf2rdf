@@ -68,13 +68,19 @@ def get_chromosome_landmark_iri(variant: Variant) -> URIRef:
     return get_landmark_iri_from_chromosome_name(variant.CHROM)
 
 def get_landmark_iri_from_chromosome_name(chromosome_name: str) -> URIRef:
-    return URIRef(LANDMARK_NS + chromosome_lookup.get_refseq_identifier(chromosome_name))
+    refseq_id = chromosome_lookup.get_refseq_identifier(chromosome_name)
+    if refseq_id is not None:
+        return URIRef(LANDMARK_NS + chromosome_lookup.get_refseq_identifier(chromosome_name))
+    return URIRef(LANDMARK_NS + chromosome_name)
 
 def get_chromosome_feature_iri(variant: Variant) -> URIRef:
     return get_chromosome_feature_iri_from_chromosome_name(variant.CHROM)
 
 def get_chromosome_feature_iri_from_chromosome_name(chromosome_name: str) -> URIRef:
-    return URIRef(FEATURE_NS + chromosome_lookup.get_refseq_identifier(chromosome_name))
+    refseq_id = chromosome_lookup.get_refseq_identifier(chromosome_name)
+    if refseq_id is not None:
+        return URIRef(FEATURE_NS + chromosome_lookup.get_refseq_identifier(chromosome_name))
+    return URIRef(FEATURE_NS + chromosome_name)
 
 def get_sample_iri(sample_name: str) -> URIRef:
     return URIRef(SAMPLE_NS + sample_name)
