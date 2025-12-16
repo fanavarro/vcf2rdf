@@ -16,6 +16,6 @@ GENOTYPE_NS = NS + "gt#"
 LANDMARK_NS = NS + "landmark/"
 FEATURE_NS = NS + "feature/"
 #TRANSCRIPT_NS = FEATURE_NS + "transcript:"
-TRANSCRIPT_NS = FEATURE_NS
+TRANSCRIPT_NS = FEATURE_NS + 'rna-'
 GENE_NS = FEATURE_NS + "gene-"
 INTERGENIC_REGION_NS = FEATURE_NS + "intergenic_region/"

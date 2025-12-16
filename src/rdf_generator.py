@@ -226,7 +226,8 @@ def add_annotation(variant: Variant, annotation: dict, graph: Graph):
     so_terms = sequence_ontology_lookup.get_iris_from_label(annotation.get('Annotation'))
     if so_terms is not None and len(so_terms) > 0:
         so_term = so_terms[0]
-        graph.add((variant_instance, RDF.type, so_term))
+        if sequence_ontology_lookup.is_subclass_of(so_term, SEQUENCE_ALTERATION_CLASS):
+            graph.add((variant_instance, RDF.type, so_term))
         graph.add((functional_annotation, ASSOCIATED_WITH_PROP, so_term))
 
     # Include the impact
