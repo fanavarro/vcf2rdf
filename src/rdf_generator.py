@@ -187,8 +187,8 @@ def get_ann_feature_instance(annotation, graph) -> URIRef:
 
     if feature_instance is not None:
         graph.add((feature_instance, RDF.type, GFVO_FEATURE_CLASS))
-    #else:
-        #print(f'Feature type "{feature_type}" not recognized. Feature ID = {feature_id}')
+    else:
+        print(f'Feature type "{feature_type}" not recognized. Feature ID = {feature_id}')
 
     return feature_instance
 
