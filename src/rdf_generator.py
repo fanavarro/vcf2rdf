@@ -522,13 +522,13 @@ def generate_rdf_file_for_vcf(vcf_file: Path, output_folder: Path, output_format
     return output_file
 
 
-def generate_rdf_per_vcf(vcf_files: list, output_folder: Path, output_format: str, threads: int):
+def generate_rdf_per_vcf(vcf_files: list, output_folder: Path, output_format: str, threads: int, stop_on_error: bool):
     with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
         future_dict = {}
         for vcf_file in vcf_files:
             if output_folder is None:
                 output_folder = Path(vcf_file).parent
-            future_dict[vcf_file] = executor.submit(generate_rdf_file_for_vcf,Path(vcf_file), output_folder, output_format, 1)
+            future_dict[vcf_file] = executor.submit(generate_rdf_file_for_vcf, Path(vcf_file), output_folder, output_format, 1)
 
         for vcf_file, future in future_dict.items():
             try:
@@ -536,12 +536,13 @@ def generate_rdf_per_vcf(vcf_files: list, output_folder: Path, output_format: st
             except Exception as exc:
                 print(f'Error processing {vcf_file}: {str(exc)}')
                 print(traceback.format_exc())
+                if stop_on_error:
+                    raise
             else:
                 print(f"{vcf_file} processed. Results saved to {rdf_file}")
 
-
-def generate_rdf(vcf_files: list, output_rdf_file: Path, output_format: str, threads: int):
-    graph: Graph = Graph()
+def generate_rdf(vcf_files: list, output_rdf_file: Path, output_format: str, threads: int, stop_on_error: bool):
+    graph = Graph()
     with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
         future_dict = {}
         for vcf_file in vcf_files:
@@ -553,6 +554,9 @@ def generate_rdf(vcf_files: list, output_rdf_file: Path, output_format: str, thr
             except Exception as exc:
                 print(f'Error processing {vcf_file}: {str(exc)}')
                 print(traceback.format_exc())
+                # New
+                if stop_on_error:
+                    raise
             else:
                 print(f"{vcf_file} processed")
                 graph = graph + vcf_graph

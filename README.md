@@ -28,7 +28,7 @@ Examples of use:
   - `python vcf2rdf -i vcf_folder/*.vcf -o graph.ttl -t4`: Process all vcf files in the folder `vcf_folder` and store the resulting RDF graph into `graph.ttl`. Use 4 threads.
   - `python vcf2rdf -i file.vcf -o graph.ttl -t4`: Process the file `file.vcf` and store the resulting RDF graph into `graph.ttl`. Use 4 threads.
   - `python vcf2rdf -i file1.vcf file2.vcf -o graph.ttl -t4`: Process the files `file1.vcf` and `file2.vcf` and store the resulting RDF graph into `graph.ttl`. Use 4 threads.
-  - `python vcf2rdf -i file1.vcf file2.vcf -d variants_ttl -t4`: Process the files `file1.vcf` and `file2.vcf` and store the resulting RDF graphs into `variants_ttl/file1.ttl` and `variants_ttl/file1.ttl`. Use 4 threads.
+  - `python vcf2rdf -i file1.vcf file2.vcf -d variants_ttl -t4`: Process the files `file1.vcf` and `file2.vcf` and generate one RDF file per input VCF in the folder `variants_ttl`. By default, the output is serialized in N-Triples format (.nt). Use 4 threads.
 
 
 ## Example of queries of the resulting graph
